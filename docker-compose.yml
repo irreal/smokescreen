@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: smokescreen
+    env_file:
+      - .env
     ports:
       - "4750:4750"
-    environment:
-      - PROXY_PASSWORD=${PROXY_PASSWORD}
     volumes:
       - ./acl.yaml:/etc/smokescreen/acl.yaml:ro
     restart: unless-stopped
