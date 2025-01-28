@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  smokescreen:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smokescreen
+    ports:
+      - "4750:4750"
+    environment:
+      - PROXY_PASSWORD=${PROXY_PASSWORD}
+    volumes:
+      - ./acl.yaml:/etc/smokescreen/acl.yaml:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "4750"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - proxy-network
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 1G
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+
+networks:
+  proxy-network:
+    driver: bridge
