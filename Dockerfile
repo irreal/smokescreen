@@ -5,7 +5,9 @@ COPY . .
 
 RUN go build .
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y netcat && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /go/src/app/smokescreen /usr/local/bin/smokescreen
 COPY acl.yaml /etc/smokescreen/acl.yaml
